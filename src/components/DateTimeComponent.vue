@@ -1,6 +1,8 @@
 <template>
   <div class="flex-grow flex flex-col justify-center items-center">
-    <div class="text-10xl text-white leading-none">{{ hour }}:{{ minutes }}</div>
+    <div class="text-10xl text-white leading-none">
+      {{ hour }}:{{ minutes }}
+    </div>
     <div class="text-white text-2xl font-semibold">
       {{ day }} {{ date }} {{ month }} {{ year }}
     </div>

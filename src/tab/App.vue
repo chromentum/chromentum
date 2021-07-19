@@ -6,33 +6,16 @@
       class="h-screen w-full absolute top-0"
       style="z-index: -100"
     />
-    <div class="z-10">
-      <form
-        action="https://www.google.com/search"
-        method="get"
-        class="pl-3 pt-3"
-      >
-        <input
-          type="text"
-          placeholder="Search Google Here"
-          name="q"
-          class="
-            rounded
-            w-1/3
-            bg-transparent
-            focus:outline-none focus:ring-transparent focus:border-gray-900
-          "
-        />
-      </form>
-    </div>
+    <SearchBoxComponent />
     <DateTimeComponent />
   </div>
 </template>
 
 <script>
 import DateTimeComponent from "../components/DateTimeComponent.vue";
+import SearchBoxComponent from "../components/SearchBoxComponent.vue";
 export default {
-  components: { DateTimeComponent },
+  components: { DateTimeComponent, SearchBoxComponent },
   data() {
     return {
       message: "My new tab page",
