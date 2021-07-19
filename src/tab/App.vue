@@ -1,25 +1,41 @@
 <template>
   <div class="h-screen flex flex-col">
-    <img
-      src="https://images.unsplash.com/photo-1542300058-849d3b08aa0f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1268&q=80"
-      alt=""
-      class="h-screen w-full absolute top-0"
-      style="z-index: -100"
-    />
+    <BackgroundImageComponent :imgUrl="imgUrl" />
     <SearchBoxComponent />
     <DateTimeComponent />
+    <span v-if="user" class="fixed bottom-2 ml-5 text-sm text-gray-400">
+      <a :href="user.links.html" target="__blank"
+        >Photo by {{ user.name }}</a
+      ></span
+    >
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
+import BackgroundImageComponent from "../components/BackgroundImageComponent.vue";
 import DateTimeComponent from "../components/DateTimeComponent.vue";
 import SearchBoxComponent from "../components/SearchBoxComponent.vue";
 export default {
-  components: { DateTimeComponent, SearchBoxComponent },
+  components: {
+    DateTimeComponent,
+    SearchBoxComponent,
+    BackgroundImageComponent,
+  },
   data() {
     return {
-      message: "My new tab page",
+      imgUrl: "",
+      user: {},
     };
+  },
+  mounted() {
+    axios
+      .get("http://chromentum-laravel.test/api/background-image?key=demoonetwo")
+      .then((response) => {
+        this.imgUrl = response.data.data.urls.full;
+        this.user = response.data.data.user;
+      });
   },
 };
 </script>

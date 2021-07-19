@@ -4,7 +4,6 @@
       <div class="w-1/3">
         <div class="mt-1 relative rounded-md shadow-sm">
           <div class="absolute inset-y-0 left-0 flex items-center">
-            <label for="currency" class="sr-only">Currency</label>
             <select
               class="
                 focus:ring-0 focus:border-transparent
@@ -14,7 +13,7 @@
                 pr-8
                 border-transparent
                 bg-transparent
-                text-gray-500
+                text-gray-50
                 sm:text-sm
                 rounded-md
               "
@@ -39,6 +38,8 @@
               sm:text-sm
               border-gray-300
               rounded-md
+              text-gray-50
+              placeholder-gray-50
             "
             placeholder="Search Here"
           />
