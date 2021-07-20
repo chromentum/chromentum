@@ -12,8 +12,6 @@
                 pl-2
                 pr-8
                 border-transparent
-                bg-transparent
-                text-gray-50
                 sm:text-sm
                 rounded-md
               "
@@ -29,19 +27,18 @@
             name="q"
             id="q"
             class="
-              focus:ring-gray-500 focus:border-gray-500
-              bg-transparent
+              ring-2 ring-gray-500
+              focus:ring-2 focus:ring-gray-900 focus:border-transparent
               block
               w-full
               pl-32
               py-3
               sm:text-sm
-              border-gray-300
+              border-transparent
               rounded-md
-              text-gray-50
-              placeholder-gray-50
             "
             placeholder="Search Here"
+            autofocus="true"
           />
         </div>
       </div>
