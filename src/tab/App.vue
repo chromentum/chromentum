@@ -31,9 +31,9 @@ export default {
   },
   mounted() {
     axios
-      .get("http://chromentum-laravel.test/api/background-image?key=demoonetwo")
+      .get("http://chromentum-laravel.test/api/background-image")
       .then((response) => {
-        this.imgUrl = response.data.data.urls.full;
+        this.imgUrl = response.data.data.urls.regular;
         this.user = response.data.data.user;
       });
   },
