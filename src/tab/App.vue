@@ -2,9 +2,10 @@
   <div class="h-screen flex flex-col">
     <BackgroundImageComponent :imgUrl="imgUrl" />
     <SearchBoxComponent />
+    <button @click="login">Login</button>
     <DateTimeComponent />
     <span v-if="user" class="fixed bottom-2 ml-5 text-sm text-gray-400">
-      <a :href="user.links.html" target="__blank"
+      <a v-if="user.links" :href="user.links.html" target="__blank"
         >Photo by {{ user.name }}</a
       ></span
     >
@@ -36,6 +37,53 @@ export default {
         this.imgUrl = response.data.data.urls.regular;
         this.user = response.data.data.user;
       });
+  },
+  methods: {
+    dec2hex(dec) {
+      return dec.toString(16).padStart(2, "0");
+    },
+    generateId(len) {
+      var arr = new Uint8Array((len || 40) / 2);
+      window.crypto.getRandomValues(arr);
+      return Array.from(arr, this.dec2hex).join("");
+    },
+    login() {
+      var auth_url = "http://chromentum-laravel.test/redirect?";
+
+      if (localStorage.getItem("state") === null) {
+        localStorage.setItem("state", this.generateId(40));
+      }
+
+      if (localStorage.getItem("codeVerifier") === null) {
+        localStorage.setItem("codeVerifier", this.generateId(128));
+      }
+
+      let auth_params = {
+        code_verifier: localStorage.getItem("codeVerifier"),
+        state: localStorage.getItem("state"),
+      };
+
+      const url = new URLSearchParams(Object.entries(auth_params));
+      url.toString();
+      auth_url += url;
+
+      chrome.identity.launchWebAuthFlow(
+        { url: auth_url, interactive: true },
+        function (responseUrl) {
+          var url = new URL(responseUrl);
+
+          var tokenUrl =
+            "http://chromentum-laravel.test/callback" +
+            url.search +
+            "&code_verifier=" +
+            localStorage.getItem("codeVerifier");
+
+          axios.get(tokenUrl).then((response) => {
+            console.log(response);
+          });
+        }
+      );
+    },
   },
 };
 </script>
