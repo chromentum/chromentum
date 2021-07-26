@@ -1,6 +1,9 @@
 <template>
   <div class="h-screen flex flex-col">
     <BackgroundImageComponent :imgUrl="imgUrl" />
+    <div class="fixed top-0 pt-4 right-5 z-50">
+      <AuthBox />
+    </div>
     <SearchBoxComponent />
     <button @click="login">Login</button>
     <DateTimeComponent />
@@ -18,8 +21,11 @@ import axios from "axios";
 import BackgroundImageComponent from "../components/BackgroundImageComponent.vue";
 import DateTimeComponent from "../components/DateTimeComponent.vue";
 import SearchBoxComponent from "../components/SearchBoxComponent.vue";
+import AuthBox from "../components/AuthBox.vue";
+
 export default {
   components: {
+    AuthBox,
     DateTimeComponent,
     SearchBoxComponent,
     BackgroundImageComponent,
@@ -31,7 +37,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$store.getters);
     axios
       .get("http://chromentum-laravel.test/api/background-image")
       .then((response) => {

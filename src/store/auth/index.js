@@ -22,8 +22,9 @@ export default {
       state.status = "success";
       state.response = response;
     },
-    auth_error(state) {
+    auth_failure(state, error) {
       state.status = "error";
+      state.response = error;
     },
     auth_logout(state) {
       state.status = "";
@@ -44,10 +45,15 @@ export default {
             "&code_verifier=" +
             localStorage.getItem("codeVerifier");
 
-          axios.get(tokenUrl).then((response) => {
-            commit("auth_success", response.data);
-            console.log(state);
-          });
+          axios
+            .get(tokenUrl)
+            .then((response) => {
+              commit("auth_success", response.data);
+              console.log(state);
+            })
+            .catch((error) => {
+              commit("auth_failure", error);
+            });
         }
       );
     },

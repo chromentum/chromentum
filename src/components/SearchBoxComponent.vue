@@ -2,7 +2,7 @@
   <div class="z-10">
     <form :action="'https://' + engine" method="get" class="pl-3 pt-3">
       <div class="w-1/3">
-        <div class="mt-1 relative rounded-md shadow-sm">
+        <div class="mt-1 relative rounded-md shadow-md">
           <div class="absolute inset-y-0 left-0 flex items-center">
             <select
               class="
@@ -27,8 +27,10 @@
             name="q"
             id="q"
             class="
-              ring-2 ring-gray-500
-              focus:ring-2 focus:ring-gray-900 focus:border-transparent
+              focus:ring-2
+              focus:ring-transparent
+              focus:shadow-lg
+              focus:border-transparent
               block
               w-full
               pl-32
