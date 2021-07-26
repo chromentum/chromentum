@@ -31,6 +31,7 @@ export default {
     };
   },
   mounted() {
+    console.log(this.$store.getters);
     axios
       .get("http://chromentum-laravel.test/api/background-image")
       .then((response) => {
@@ -67,22 +68,8 @@ export default {
       url.toString();
       auth_url += url;
 
-      chrome.identity.launchWebAuthFlow(
-        { url: auth_url, interactive: true },
-        function (responseUrl) {
-          var url = new URL(responseUrl);
-
-          var tokenUrl =
-            "http://chromentum-laravel.test/callback" +
-            url.search +
-            "&code_verifier=" +
-            localStorage.getItem("codeVerifier");
-
-          axios.get(tokenUrl).then((response) => {
-            console.log(response);
-          });
-        }
-      );
+      console.log(auth_url);
+      this.$store.dispatch("auth/login", auth_url);
     },
   },
 };
