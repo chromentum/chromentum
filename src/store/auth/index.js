@@ -13,8 +13,12 @@ export default {
   getters: {
     isLoggedIn: (state) => !!state.response.access_token,
     authStatus: (state) => state.status,
+    authUser: (state) => state.user,
   },
   mutations: {
+    set_user(state, user) {
+      state.user = user;
+    },
     auth_request(state) {
       state.status = "loading";
     },
@@ -56,6 +60,20 @@ export default {
             });
         }
       );
+    },
+    fetchUser({ commit, state }) {
+      axios
+        .get("http://chromentum-laravel.test/api/user", {
+          headers: {
+            Authorization: `Bearer ${state.response.access_token}`,
+          },
+        })
+        .then((response) => {
+          commit("set_user", response.data.data);
+        })
+        .catch((error) => {
+          commit("auth_failure", error);
+        });
     },
   },
   modules: {},
