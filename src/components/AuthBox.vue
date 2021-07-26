@@ -13,7 +13,13 @@
           <div class="text-sm text-gray-400">{{ authUser.email }}</div>
         </li>
         <li
-          class="text-sm text-gray-700 py-1 px-4 cursor-pointer hover:bg-gray-50"
+          class="
+            text-sm text-gray-700
+            py-1
+            px-4
+            cursor-pointer
+            hover:bg-gray-50
+          "
           v-on:click="logout"
         >
           Logout
@@ -23,7 +29,6 @@
   </div>
 </template>
 <script>
-import axios from "axios";
 import { mapGetters } from "vuex";
 export default {
   data() {
@@ -35,7 +40,7 @@ export default {
     ...mapGetters({ isLoggedIn: "auth/isLoggedIn", authUser: "auth/authUser" }),
   },
   mounted() {
-    if (this.isLoggedIn && this.authUser === {}) {
+    if (this.authUser === null && this.isLoggedIn) {
       this.$store.dispatch("auth/fetchUser");
     }
   },
@@ -47,15 +52,7 @@ export default {
       this.open = false;
     },
     logout() {
-      axios
-        .get("http://chromentum-laravel.test/api/logout", {
-          headers: {
-            Authorization: `Bearer ${this.$store.state.auth.response.access_token}`,
-          },
-        })
-        .then((response) => {
-          console.log(response);
-        });
+      this.$store.dispatch("auth/logout");
     },
   },
 };

@@ -8,7 +8,7 @@ export default {
   state: {
     response: "",
     status: "",
-    user: {},
+    user: null,
   },
   getters: {
     isLoggedIn: (state) => !!state.response.access_token,
@@ -33,11 +33,11 @@ export default {
     auth_logout(state) {
       state.status = "";
       state.response = "";
-      state.user = {};
+      state.user = null;
     },
   },
   actions: {
-    login({ commit, state }, auth_url) {
+    login({ commit }, auth_url) {
       chrome.identity.launchWebAuthFlow(
         { url: auth_url, interactive: true },
         function (responseUrl) {
@@ -52,8 +52,19 @@ export default {
           axios
             .get(tokenUrl)
             .then((response) => {
-              commit("auth_success", response.data);
-              console.log(state);
+              axios
+                .get("http://chromentum-laravel.test/api/user", {
+                  headers: {
+                    Authorization: `Bearer ${response.data.access_token}`,
+                  },
+                })
+                .then((userResponse) => {
+                  commit("auth_success", response.data);
+                  commit("set_user", userResponse.data.data);
+                })
+                .catch((error) => {
+                  commit("auth_failure", error);
+                });
             })
             .catch((error) => {
               commit("auth_failure", error);
@@ -73,6 +84,17 @@ export default {
         })
         .catch((error) => {
           commit("auth_failure", error);
+        });
+    },
+    logout({ commit, state }) {
+      axios
+        .get("http://chromentum-laravel.test/api/logout", {
+          headers: {
+            Authorization: `Bearer ${state.response.access_token}`,
+          },
+        })
+        .then(() => {
+          commit("auth_logout");
         });
     },
   },
