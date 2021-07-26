@@ -3,7 +3,7 @@
     <div class="flex flex-col justify-end items-end" v-if="isLoggedIn">
       <img
         class="inline-block h-12 w-12 rounded-full shadow-md cursor-pointer"
-        src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+        :src="authUser.profile_photo_url"
         alt=""
         v-on:click="toggleMenu"
       />
@@ -25,6 +25,25 @@
           Logout
         </li>
       </ul>
+    </div>
+    <div
+      class="
+        flex flex-col
+        justify-center
+        items-end
+        bg-white
+        rounded
+        px-6
+        py-2
+        shadow-md
+        text-lg
+        hover:shadow-lg hover:bg-gray-50
+        cursor-pointer
+      "
+      @click="login"
+      v-else
+    >
+      Login
     </div>
   </div>
 </template>
@@ -53,6 +72,37 @@ export default {
     },
     logout() {
       this.$store.dispatch("auth/logout");
+    },
+    dec2hex(dec) {
+      return dec.toString(16).padStart(2, "0");
+    },
+    generateId(len) {
+      var arr = new Uint8Array((len || 40) / 2);
+      window.crypto.getRandomValues(arr);
+      return Array.from(arr, this.dec2hex).join("");
+    },
+    login() {
+      var auth_url = "http://chromentum-laravel.test/redirect?";
+
+      if (localStorage.getItem("state") === null) {
+        localStorage.setItem("state", this.generateId(40));
+      }
+
+      if (localStorage.getItem("codeVerifier") === null) {
+        localStorage.setItem("codeVerifier", this.generateId(128));
+      }
+
+      let auth_params = {
+        code_verifier: localStorage.getItem("codeVerifier"),
+        state: localStorage.getItem("state"),
+      };
+
+      const url = new URLSearchParams(Object.entries(auth_params));
+      url.toString();
+      auth_url += url;
+
+      console.log(auth_url);
+      this.$store.dispatch("auth/login", auth_url);
     },
   },
 };

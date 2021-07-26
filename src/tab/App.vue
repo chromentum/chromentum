@@ -5,7 +5,6 @@
       <AuthBox />
     </div>
     <SearchBoxComponent />
-    <button @click="login">Login</button>
     <DateTimeComponent />
     <span v-if="user" class="fixed bottom-2 ml-5 text-sm text-gray-400">
       <a v-if="user.links" :href="user.links.html" target="__blank"
