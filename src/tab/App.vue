@@ -11,6 +11,7 @@
         >Photo by {{ user.name }}</a
       ></span
     >
+    <TodoComponent />
   </div>
 </template>
 
@@ -21,6 +22,7 @@ import BackgroundImageComponent from "../components/BackgroundImageComponent.vue
 import DateTimeComponent from "../components/DateTimeComponent.vue";
 import SearchBoxComponent from "../components/SearchBoxComponent.vue";
 import AuthBox from "../components/AuthBox.vue";
+import TodoComponent from "../components/Todo.vue";
 
 export default {
   components: {
@@ -28,6 +30,7 @@ export default {
     DateTimeComponent,
     SearchBoxComponent,
     BackgroundImageComponent,
+    TodoComponent,
   },
   data() {
     return {
@@ -36,6 +39,7 @@ export default {
     };
   },
   mounted() {
+    console.log(chrome.identity.getRedirectURL());
     axios
       .get("http://chromentum-laravel.test/api/background-image")
       .then((response) => {
