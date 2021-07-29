@@ -44,7 +44,7 @@ export default {
           var url = new URL(responseUrl);
 
           var tokenUrl =
-            "http://chromentum-laravel.test/callback" +
+            process.env.VUE_APP_OAUTH_AUTH_URL +
             url.search +
             "&code_verifier=" +
             localStorage.getItem("codeVerifier");
@@ -52,19 +52,8 @@ export default {
           axios
             .get(tokenUrl)
             .then((response) => {
-              axios
-                .get("http://chromentum-laravel.test/api/user", {
-                  headers: {
-                    Authorization: `Bearer ${response.data.access_token}`,
-                  },
-                })
-                .then((userResponse) => {
-                  commit("auth_success", response.data);
-                  commit("set_user", userResponse.data.data);
-                })
-                .catch((error) => {
-                  commit("auth_failure", error);
-                });
+              commit("auth_success", response.data);
+              location.reload();
             })
             .catch((error) => {
               commit("auth_failure", error);
@@ -72,13 +61,9 @@ export default {
         }
       );
     },
-    fetchUser({ commit, state }) {
+    fetchUser({ commit }) {
       axios
-        .get("http://chromentum-laravel.test/api/user", {
-          headers: {
-            Authorization: `Bearer ${state.response.access_token}`,
-          },
-        })
+        .get("/user")
         .then((response) => {
           commit("set_user", response.data.data);
         })

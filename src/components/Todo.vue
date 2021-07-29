@@ -169,6 +169,7 @@ export default {
         completed: index > 5 ? false : true,
       });
     }
+    this.$store.dispatch("task/fetchTasks");
   },
   methods: {
     toggleMenu() {
