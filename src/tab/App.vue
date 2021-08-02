@@ -11,7 +11,7 @@
         >Photo by {{ user.name }}</a
       ></span
     >
-    <TodoComponent ref="tasksboard" />
+    <TodoComponent v-if="isLoggedIn" />
   </div>
 </template>
 
@@ -23,6 +23,7 @@ import DateTimeComponent from "../components/DateTimeComponent.vue";
 import SearchBoxComponent from "../components/SearchBoxComponent.vue";
 import AuthBox from "../components/AuthBox.vue";
 import TodoComponent from "../components/Todo.vue";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -38,7 +39,13 @@ export default {
       user: {},
     };
   },
+  computed: {
+    ...mapGetters({
+      isLoggedIn: "auth/isLoggedIn",
+    }),
+  },
   mounted() {
+    console.log(this.isLoggedIn);
     axios
       .get("http://chromentum-laravel.test/api/background-image")
       .then((response) => {
