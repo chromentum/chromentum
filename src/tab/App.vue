@@ -11,7 +11,7 @@
         >Photo by {{ user.name }}</a
       ></span
     >
-    <TodoComponent />
+    <TodoComponent ref="tasksboard" />
   </div>
 </template>
 
@@ -39,7 +39,6 @@ export default {
     };
   },
   mounted() {
-    console.log(chrome.identity.getRedirectURL());
     axios
       .get("http://chromentum-laravel.test/api/background-image")
       .then((response) => {
