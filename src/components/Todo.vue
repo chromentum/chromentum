@@ -43,8 +43,10 @@
             Todo List
           </h1>
           <svg
+            @click="fetchTasks"
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 text-gray-400"
+            class="h-4 w-4 text-gray-400 cursor-pointer"
+            :class="{ 'animate-spin': status == 'loading' }"
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -55,65 +57,150 @@
             />
           </svg>
         </div>
-        <div class="flex-grow overflow-y-auto">
+        <div class="flex-grow overflow-y-auto overflow-x-hidden">
+          <div class="text-sm text-gray-500" v-if="tasks.length == 0">
+            Add your tasks...
+          </div>
           <div
-            class="mx-5 rounded-lg bg-white flex flex-col shadow-md my-2"
-            v-for="(todo, index) in todos"
+            class="
+              mx-5
+              rounded-lg
+              bg-white
+              overflow-hidden
+              flex flex-col
+              shadow-md
+              my-2
+              relative
+            "
+            v-for="(todo, index) in tasks"
             :key="index"
           >
-            <div class="flex">
+            <div class="flex overflow-hidden">
               <div
-                class="flex items-center w-5 px-0.5 shadow-lg"
-                :class="{
-                  'bg-green-500': todo.completed,
-                  'bg-red-300': !todo.completed,
-                }"
+                class="
+                  flex flex-col
+                  items-center
+                  cursor-pointer
+                  w-5
+                  px-0.5
+                  shadow-lg
+                  relative
+                  bg-blue-400
+                  overflow-ellipsis
+                  group
+                "
               >
                 <svg
-                  v-if="todo.completed"
+                  v-if="!todo.completed"
+                  name="check"
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                  class="h-4 w-4 flex-1 text-white"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  @click="markAsCompleted(todo.id)"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
                   />
                 </svg>
-
                 <svg
-                  v-if="!todo.completed"
+                  v-if="todo.completed"
+                  name="uncheck"
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                  class="h-4 w-4 flex-1 text-white"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  @click="markAsNotCompleted(todo.id)"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
+                    fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <div class="h-px w-full bg-white"></div>
+                <svg
+                  name="remove"
+                  @click="openRemoveSection(todo.id)"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 flex-1 text-white"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                    clip-rule="evenodd"
                   />
                 </svg>
               </div>
-              <div class="flex-grow relative px-2">
-                <h1 class="text-base text-gray-500 ml-4 text-left font-normal">
+              <div class="flex-grow px-2 py-2 truncate">
+                <h1
+                  class="text-base truncate text-gray-500 text-left font-normal"
+                  :class="{ 'line-through': todo.completed }"
+                >
                   {{ todo.description }}
                 </h1>
-                <div class="text-gray-500 w-full text-right">
-                  {{ todo.date }}
+                <div
+                  class="text-gray-500 w-full text-xxs text-left"
+                  :class="{ 'line-through': todo.completed }"
+                >
+                  {{ todo.date_for_human }}
+                </div>
+                <div
+                  :id="`remove-sec-${todo.id}`"
+                  class="
+                    absolute
+                    flex
+                    inset-0
+                    opacity-0
+                    -z-10
+                    h-full
+                    w-full
+                    bg-white
+                    trasition-all
+                    delay-150
+                    duration-300
+                    items-center
+                  "
+                >
+                  <button
+                    class="
+                      flex-1
+                      bg-opacity-30
+                      text-gray-500
+                      h-full
+                      hover:bg-red-500 hover:text-white
+                    "
+                    @click="closeRemoveSection(todo.id)"
+                    :disabled="status == 'deleting'"
+                  >
+                    Cancel
+                  </button>
+                  <div class="w-px bg-gray-300 h-6"></div>
+                  <button
+                    @click="removeTask(todo.id)"
+                    class="
+                      flex-1
+                      text-gray-500
+                      hover:bg-green-500
+                      h-full
+                      hover:text-white
+                    "
+                    :disabled="status == 'deleting'"
+                  >
+                    Confirm
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div
+      <form
+        v-on:submit.prevent="createTask"
         class="
           w-full
           bg-white
@@ -128,12 +215,13 @@
         "
       >
         <input
+          v-model="taskDescription"
           class="flex-grow border focus:outline-none px-2 w-full h-12"
           placeholder="Create a Todo"
-          @focus="show = true"
+          @click="show = true"
         />
-        <div
-          class="h-full hover:bg-gray-50 cursor-pointer flex items-center px-2"
+        <button
+          class="h-full hover:bg-gray-100 cursor-pointer flex items-center px-2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -147,32 +235,91 @@
               clip-rule="evenodd"
             />
           </svg>
-        </div>
-      </div>
+        </button>
+      </form>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
       show: false,
       todos: [],
+      taskDescription: "",
     };
   },
+  computed: {
+    ...mapGetters({
+      tasks: "task/tasks",
+      error: "task/error",
+      status: "task/status",
+    }),
+  },
+  created() {
+    const onEscape = (e) => {
+      if (this.show && e.keyCode === 27) {
+        this.closeTaskBoard();
+      }
+    };
+
+    document.addEventListener("keydown", onEscape);
+    this.$once("hook:destroyed", () => {
+      document.removeEventListener("keydown", onEscape);
+    });
+  },
   mounted() {
-    for (let index = 0; index < 10; index++) {
-      this.todos.push({
-        description: "Test Todo",
-        date: index + "-06-21",
-        completed: index > 5 ? false : true,
-      });
-    }
+    this.fetchTasks();
   },
   methods: {
     toggleMenu() {
       this.show = !this.show;
+    },
+    createTask() {
+      this.show = true;
+      let task = {
+        description: this.taskDescription,
+      };
+      this.$store.dispatch("task/createTask", task);
+      this.taskDescription = "";
+    },
+    fetchTasks() {
+      this.$store.dispatch("task/fetchTasks");
+    },
+    openRemoveSection(id) {
+      let removeSection = document.getElementById("remove-sec-" + id);
+      if (removeSection.classList.contains("-z-10")) {
+        removeSection.classList.remove("-z-10");
+      }
+      if (removeSection.classList.contains("opacity-0")) {
+        removeSection.classList.remove("opacity-0");
+      }
+    },
+    closeRemoveSection(id) {
+      let removeSection = document.getElementById("remove-sec-" + id);
+      if (!removeSection.classList.contains("opacity-0")) {
+        removeSection.classList.add("opacity-0");
+      }
+      if (!removeSection.classList.contains("-z-10")) {
+        removeSection.classList.add("-z-10");
+      }
+    },
+    removeTask(id) {
+      this.closeRemoveSection(id);
+      this.$store.dispatch("task/removeTask", id);
+    },
+    markAsCompleted(id) {
+      let status = { id: id, completed: true };
+      this.$store.dispatch("task/updateTask", status);
+    },
+    markAsNotCompleted(id) {
+      let status = { id: id, completed: false };
+      this.$store.dispatch("task/updateTask", status);
+    },
+    closeTaskBoard() {
+      this.show = false;
     },
   },
 };
