@@ -31,7 +31,7 @@ export default {
       axios
         .get("/quote")
         .then((res) => {
-          commit("set_quote", res.data);
+          commit("set_quote", res.data.data);
         })
         .catch((err) => {
           commit("set_error", err.response.data);
