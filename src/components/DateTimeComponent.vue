@@ -3,15 +3,21 @@
     <div class="text-10xl text-white leading-none">
       {{ hour }}:{{ minutes }}
     </div>
-    <div class="text-white text-2xl font-semibold">
+    <div class="text-white text-2xl font-semibold border-b-2 pb-2">
       {{ day }} {{ date }} {{ month }} {{ year }}
+    </div>
+    <div class="mt-3">
+      <QuoteComponent />
     </div>
   </div>
 </template>
 
 <script>
 import moment from "moment";
+import QuoteComponent from "./QuoteComponent";
+
 export default {
+  components: { QuoteComponent },
   data() {
     var now = new moment();
     return {

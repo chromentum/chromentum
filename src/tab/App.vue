@@ -45,7 +45,6 @@ export default {
     }),
   },
   mounted() {
-    console.log(this.isLoggedIn);
     axios
       .get("http://chromentum-laravel.test/api/background-image")
       .then((response) => {
