@@ -1,5 +1,7 @@
 <template>
   <div>
+    <!-- Full Screen Overlay -->
+    <div v-show="show" class="fixed inset-0 z-40" @click="show = false"></div>
     <div
       class="
         fixed
@@ -15,11 +17,9 @@
         w-3/12
         p-2
         duration-500
+        z-50
       "
     >
-      <!-- <div class="w-full bg-white rounded shadow-md">
-        
-      </div> -->
       <div
         class="
           flex-grow

@@ -7,7 +7,14 @@
         alt=""
         v-on:click="toggleMenu"
       />
-      <ul class="bg-white mt-2 rounded overflow-hidden shadow-md" v-if="open">
+
+      <!-- Full Screen Overlay -->
+      <div v-show="open" class="fixed inset-0 z-40" @click="open = false"></div>
+
+      <ul
+        class="bg-white mt-2 rounded z-50 overflow-hidden shadow-md"
+        v-if="open"
+      >
         <li class="text-base text-gray-700 py-4 px-4 hover:bg-gray-50">
           <div class="text-lg leading-4">{{ authUser.name }}</div>
           <div class="text-sm text-gray-400">{{ authUser.email }}</div>
